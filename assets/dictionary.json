@@ -1,0 +1,84 @@
+{
+  "dictionary": [
+    {
+      "id": 1,
+      "word": "apple"
+    },
+    {
+      "id": 2,
+      "word": "banana"
+    },
+    {
+      "id": 3,
+      "word": "cat"
+    },
+    {
+      "id": 4,
+      "word": "dog"
+    },
+    {
+      "id": 5,
+      "word": "elephant"
+    },
+    {
+      "id": 6,
+      "word": "fish"
+    },
+    {
+      "id": 7,
+      "word": "grape"
+    },
+    {
+      "id": 8,
+      "word": "horse"
+    },
+    {
+      "id": 9,
+      "word": "ice cream"
+    },
+    {
+      "id": 10,
+      "word": "jellyfish"
+    },
+    {
+      "id": 11,
+      "word": "kiwi"
+    },
+    {
+      "id": 12,
+      "word": "lemon"
+    },
+    {
+      "id": 13,
+      "word": "mango"
+    },
+    {
+      "id": 14,
+      "word": "nut"
+    },
+    {
+      "id": 15,
+      "word": "orange"
+    },
+    {
+      "id": 16,
+      "word": "pear"
+    },
+    {
+      "id": 17,
+      "word": "quail"
+    },
+    {
+      "id": 18,
+      "word": "rabbit"
+    },
+    {
+      "id": 19,
+      "word": "strawberry"
+    },
+    {
+      "id": 20,
+      "word": "turtle"
+    }
+  ]
+}
