@@ -1,3 +1,5 @@
+package com.httpserver;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -81,7 +83,8 @@ public class SimpleHttpServer implements httpserver {
      * Reads an incoming request from the socket connection.
      *
      * @param connection the socket connection for the request
-     * @return an Optional containing the HttpRequest if the request is valid, or an empty Optional if the request is invalid
+     * @return an Optional containing the HttpRequest if the request is valid, or an
+     *         empty Optional if the request is invalid
      * @throws Exception if an error occurs while reading the request
      */
     private Optional<HttpRequest> readRequest(Socket connection) throws Exception {
@@ -151,9 +154,9 @@ public class SimpleHttpServer implements httpserver {
     /**
      * Reads the request body from the input stream.
      *
-     * @param stream              the input stream to read from
-     * @param readBody            the initial body bytes read from the request head
-     * @param expectedBodyLength  the expected length of the request body
+     * @param stream             the input stream to read from
+     * @param readBody           the initial body bytes read from the request head
+     * @param expectedBodyLength the expected length of the request body
      * @return the complete request body as a byte array
      * @throws IOException if an error occurs while reading the request body
      */
@@ -184,26 +187,41 @@ public class SimpleHttpServer implements httpserver {
      * Responds to an incoming request.
      *
      * @param connection the socket connection for the request
-     * @param request        the HttpRequest object representing the request
+     * @param request    the HttpRequest object representing the request
      * @throws Exception if an error occurs while responding to the request
      */
     private void respondToRequest(Socket connection, HttpRequest request) throws Exception {
         var method = request.method();
         var respondBuilder = new methodImplementation();
         HttpResponse res = null;
-        switch (method){
+        switch (method) {
             case "GET":
-                System.out.println("method  = GET");
+                // System.out.println("method = GET");
                 res = respondBuilder.responseGET(request);
                 break;
             case "POST":
-                System.out.println("method  = POST");
+                // System.out.println("method = POST");
                 res = respondBuilder.responsePOST(request);
+                break;
+
+            case "PUT":
+                // System.out.println("method = PUT");
+                res = respondBuilder.responsePUT(request);
+                break;
+
+            case "DELETE":
+                // System.out.println("method = DELETE");
+                res = respondBuilder.responseDELETE(request);
+                break;
+
+            case "HEAD":
+                // System.out.println("method = HEAD");
+                res = respondBuilder.responseHEAD(request);
                 break;
             default:
                 break;
         }
-        
+
         // var res = requestRespond(request);
         var os = connection.getOutputStream();
         var resHead = new StringBuilder("HTTP/1.1 %d".formatted(res.responseCode()));
@@ -294,9 +312,5 @@ public class SimpleHttpServer implements httpserver {
         // System.out.println("Headers: " + request.header());
         System.out.println("Body: " + new String(request.body(), StandardCharsets.UTF_8));
     }
-
-
-
-
 
 }

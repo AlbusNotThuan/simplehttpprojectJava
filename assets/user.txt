@@ -4,3 +4,4 @@ BeanJ
 BeanJ
 new
 new
+new
