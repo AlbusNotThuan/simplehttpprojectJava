@@ -77,6 +77,8 @@ public class SimpleHttpServer implements httpserver {
         respondToRequest(connection, request);
 
         printRequest(request);
+
+        closeConnection(connection);
     }
 
     /**
@@ -313,4 +315,12 @@ public class SimpleHttpServer implements httpserver {
         System.out.println("Body: " + new String(request.body(), StandardCharsets.UTF_8));
     }
 
+    private void closeConnection(Socket connection) {
+        try {
+            System.out.println("Closing connection...");
+            connection.close();
+        } catch (Exception ignored) {
+
+        }
+    }
 }
