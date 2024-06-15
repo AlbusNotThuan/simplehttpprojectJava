@@ -61,6 +61,8 @@ public class SimpleHttpServer implements httpserver {
     @Override
     public void stop() {
         // TODO: Implement the stop method
+
+        // DONT DO: Laziness
     }
 
     /**
@@ -186,6 +188,32 @@ public class SimpleHttpServer implements httpserver {
     }
 
     /**
+     * Reads the headers from the request lines.
+     *
+     * @param lines the request lines
+     * @return a map of header names to header values
+     */
+    private Map<String, List<String>> readHeaders(String[] lines) {
+        var headers = new HashMap<String, List<String>>();
+
+        for (int i = 1; i < lines.length; i++) {
+            var line = lines[i];
+            if (line.isEmpty()) {
+                break;
+            }
+            var keyValue = line.split(":", 2);
+            var key = keyValue[0].toLowerCase().trim();
+            var value = keyValue[1].trim();
+
+            headers.computeIfAbsent(key, k -> new ArrayList<>()).add(value);
+
+        }
+
+        return headers;
+
+    }
+
+    /**
      * Responds to an incoming request.
      *
      * @param connection the socket connection for the request
@@ -243,58 +271,6 @@ public class SimpleHttpServer implements httpserver {
     }
 
     /**
-     * Generates a response for the given request.
-     *
-     * @param request the HttpRequest object representing the request
-     * @return the HttpResponse object representing the response
-     */
-    private HttpResponse requestRespond(HttpRequest request) {
-        var body = """
-                <html>
-                    <head>
-                        <title>Java HTTP Server</title>
-                    </head>
-                    <body>
-                        <h1>Hello from Java HTTP Server</h1>
-                        <p>Method = %s</p>
-                        <p>URL = %s</p>
-                        <p>Headers = %s</p>
-                        <p>Body = %s</p>
-                    </body>
-                """.getBytes(StandardCharsets.UTF_8);
-
-        var headers = Map.of("Content-Type", List.of("text/html"),
-                "Content-Length", List.of(String.valueOf(body.length)));
-        return new HttpResponse(200, headers, body);
-    }
-
-    /**
-     * Reads the headers from the request lines.
-     *
-     * @param lines the request lines
-     * @return a map of header names to header values
-     */
-    private Map<String, List<String>> readHeaders(String[] lines) {
-        var headers = new HashMap<String, List<String>>();
-
-        for (int i = 1; i < lines.length; i++) {
-            var line = lines[i];
-            if (line.isEmpty()) {
-                break;
-            }
-            var keyValue = line.split(":", 2);
-            var key = keyValue[0].toLowerCase().trim();
-            var value = keyValue[1].trim();
-
-            headers.computeIfAbsent(key, k -> new ArrayList<>()).add(value);
-
-        }
-
-        return headers;
-
-    }
-
-    /**
      * Retrieves the length of the request body from the headers.
      *
      * @param headers the request headers
@@ -323,4 +299,31 @@ public class SimpleHttpServer implements httpserver {
 
         }
     }
+
+    /**
+     * Generates a response for the given request.
+     *
+     * @param request the HttpRequest object representing the request
+     * @return the HttpResponse object representing the response
+     */
+    // private HttpResponse requestRespond(HttpRequest request) {
+    // var body = """
+    // <html>
+    // <head>
+    // <title>Java HTTP Server</title>
+    // </head>
+    // <body>
+    // <h1>Hello from Java HTTP Server</h1>
+    // <p>Method = %s</p>
+    // <p>URL = %s</p>
+    // <p>Headers = %s</p>
+    // <p>Body = %s</p>
+    // </body>
+    // """.getBytes(StandardCharsets.UTF_8);
+
+    // var headers = Map.of("Content-Type", List.of("text/html"),
+    // "Content-Length", List.of(String.valueOf(body.length)));
+    // return new HttpResponse(200, headers, body);
+    // }
+
 }
