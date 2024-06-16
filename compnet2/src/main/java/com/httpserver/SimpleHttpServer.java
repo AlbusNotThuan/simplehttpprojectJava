@@ -18,9 +18,9 @@ public class SimpleHttpServer implements httpserver {
 
     private final ExecutorService executors;
     private final int port;
-    private static final int DEFAULT_PACKET_SIZE = 1024;
-    private static final String HTTP_NEW_LINE = "\r\n";
-    private static final String HTTP_HEAD_BODY = "\r\n\r\n";
+    private static final int DEFAULT_PACKET_SIZE = 1024; // buffer size
+    private static final String HTTP_NEW_LINE = "\r\n"; // new line separator
+    private static final String HTTP_HEAD_BODY = "\r\n\r\n"; // header body separator
     private static final int HTTP_HEAD_BODY_BYTES = HTTP_HEAD_BODY.getBytes(StandardCharsets.US_ASCII).length;
     private static final String CONTENT_LENGTH_HEADER = "content-length";
 
@@ -44,6 +44,7 @@ public class SimpleHttpServer implements httpserver {
                 while (true) {
                     var connection = server.accept();
 
+                    // () : runnable to run multithreading
                     executors.execute(() -> {
                         try {
                             handleRequest(connection);
@@ -67,6 +68,12 @@ public class SimpleHttpServer implements httpserver {
 
     /**
      * Handles an incoming request.
+     * 
+     * HTTP is a protocal (HyperText Transfer Protocol) that is used to transfer
+     * data
+     * between a client and a server.
+     * 
+     * Http server la minh tu define may cai giao thuc dua tren TCP/IP
      *
      * @param connection the socket connection for the request
      * @throws Exception if an error occurs while handling the request
@@ -80,6 +87,12 @@ public class SimpleHttpServer implements httpserver {
 
         printRequest(request);
 
+        // close connection after response -> neu khong close, server bi dung
+        // default cua tcp la keep-alive
+        /*
+         * Connection: keep-alive -> server se giu ket noi voi client, cho den khi
+         * client dong ket noi Connection: close -> server se dong
+         */
         closeConnection(connection);
     }
 
@@ -96,12 +109,13 @@ public class SimpleHttpServer implements httpserver {
         var rawRequestHead = readRawRequestHead(stream);
 
         if (rawRequestHead.length == 0) {
-            return Optional.empty();
+            return Optional.empty(); // loi khong doc duoc request
         }
 
-        var requestHead = new String(rawRequestHead, StandardCharsets.US_ASCII);
+        var requestHead = new String(rawRequestHead, StandardCharsets.US_ASCII); // decoding byte[] thanh
         var lines = requestHead.split(HTTP_NEW_LINE);
 
+        // lay method va url
         var line = lines[0];
         String[] methodUrl = line.split(" ");
         String method = methodUrl[0];
@@ -111,12 +125,18 @@ public class SimpleHttpServer implements httpserver {
 
         byte[] body;
 
+        // check xem co body hong
         var bodyLength = getBodyLength(headers);
 
         if (bodyLength > 0) {
             var bodyStartIndex = requestHead.indexOf(HTTP_HEAD_BODY);
 
             if (bodyStartIndex > 0) {
+                /*
+                 * Neu ma tim dc body tu vi tri empty line -> bodyStartIndex +
+                 * HTTP_HEAD_BODY_BYTES
+                 * la vi tri bat dau cua body den het request
+                 */
                 var readBody = Arrays.copyOfRange(rawRequestHead,
                         bodyStartIndex + HTTP_HEAD_BODY_BYTES, rawRequestHead.length);
 
@@ -140,7 +160,15 @@ public class SimpleHttpServer implements httpserver {
      * @throws Exception if an error occurs while reading the request head
      */
     private byte[] readRawRequestHead(InputStream stream) throws Exception {
-        var toRead = stream.available();
+
+        /*
+         * client se gui byte[]
+         * 
+         * 
+         */
+        // method that returns an estimate of the number of bytes that can be read (or
+        // skipped over) from this input stream
+        var toRead = stream.available(); // so byte co the doc duoc tu stream
         if (toRead == 0) {
             toRead = DEFAULT_PACKET_SIZE;
         }
