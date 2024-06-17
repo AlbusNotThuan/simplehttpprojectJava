@@ -105,6 +105,7 @@ public class SimpleHttpServer implements httpserver {
      * @throws Exception if an error occurs while reading the request
      */
     private Optional<HttpRequest> readRequest(Socket connection) throws Exception {
+        // doc gop tin TCP
         var stream = connection.getInputStream();
         var rawRequestHead = readRawRequestHead(stream);
 
@@ -112,7 +113,9 @@ public class SimpleHttpServer implements httpserver {
             return Optional.empty(); // loi khong doc duoc request
         }
 
-        var requestHead = new String(rawRequestHead, StandardCharsets.US_ASCII); // decoding byte[] thanh
+        // convert byte[] thanh String
+        var requestHead = new String(rawRequestHead, StandardCharsets.US_ASCII);
+        // Lay request Line
         var lines = requestHead.split(HTTP_NEW_LINE);
 
         // lay method va url
@@ -315,7 +318,10 @@ public class SimpleHttpServer implements httpserver {
     private void printRequest(HttpRequest request) {
         System.out.println("Method: " + request.method());
         System.out.println("URL: " + request.url());
-        // System.out.println("Headers: " + request.header());
+        System.out.println("Headers:");
+        request.header().forEach((k, v) -> {
+            System.out.println("%s - %s".formatted(k, v));
+        });
         System.out.println("Body: " + new String(request.body(), StandardCharsets.UTF_8));
     }
 

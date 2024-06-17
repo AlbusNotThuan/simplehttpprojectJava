@@ -19,6 +19,7 @@ public class methodImplementation {
         Path filePath = Path.of(url);
         if (Files.exists(filePath)) {
             try {
+                // content cua file -> body
                 byte[] body = Files.readAllBytes(filePath);
                 var headers = Map.of("Content-Type", List.of("text/html"),
                         "Content-Length", List.of(String.valueOf(body.length)));
