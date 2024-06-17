@@ -39,9 +39,12 @@ public class methodImplementation {
         try {
             // Read the body of the request
             String body = new String(request.body(), StandardCharsets.UTF_8);
-            Path filePath = Path.of("assets/user.txt");
+            String[] parts = body.split(";");
+            String fileName = parts[0];
+            String value = parts[1];
+            Path filePath = Path.of("assets/" + fileName + ".txt");
             // Perform some action based on the body of the request
-            Files.writeString(filePath, body + System.lineSeparator(), StandardOpenOption.APPEND);
+            Files.writeString(filePath, value + System.lineSeparator(), StandardOpenOption.APPEND);
             String responseBody = "User data added successfully";
             var headers = Map.of("Content-Type", List.of("text/plain"),
                     "Content-Length", List.of(String.valueOf(responseBody.length())));
